@@ -68,52 +68,83 @@ Note about Free plan: the service may go idle when unused.
 The first request after idle can take a few seconds (cold start). Subsequent requests are fast.
 
 
- ## API Endpoints
+ # API Endpoints:
+ ## Health check
 
-### Health Check
-| Method | Endpoint  | Description                 | Success | Errors |
-|-------:|-----------|-----------------------------|---------|--------|
-| GET    | `/health` | Verify the service is alive | `{ "message": "ok" }` | – |
+Method: GET /health
+Description: Used to check if the server is running.
+Response:
 
----
+{ "message": "ok" }
 
-### Get Balance
-| Method | Endpoint                             | Description                     | Success | Errors |
-|-------:|--------------------------------------|---------------------------------|---------|--------|
-| GET    | `/accounts/{account_number}/balance` | Return current account balance  | `{ "account_number": "1001", "balance": 250.0 }` | `400` invalid account format<br>`404` not found |
+ ## Get Balance
 
----
+Method: GET /accounts/{account_number}/balance
+Description: Returns the current balance of the given account.
+Path parameter:
 
-### Deposit
-| Method | Endpoint                             | Description           | Body | Success | Errors |
-|-------:|--------------------------------------|-----------------------|------|---------|--------|
-| POST   | `/accounts/{account_number}/deposit` | Deposit money to acct | `{ "amount": 50 }` | `{ "message": "Deposit successful", "balance": 300.0 }` | `400` invalid body / non-positive amount<br>`404` not found |
+account_number → account identifier (string or number).
 
----
+Success response (200):
 
-### Withdraw
-| Method | Endpoint                              | Description                | Body | Success | Errors |
-|-------:|---------------------------------------|----------------------------|------|---------|--------|
-| POST   | `/accounts/{account_number}/withdraw` | Withdraw money from acct   | `{ "amount": 100 }` | `{ "message": "Withdrawal successful", "balance": 200.0 }` | `400` invalid body / insufficient funds<br>`404` not found |
+{
+  "account_number": "1001",
+  "balance": 250.0
+}
 
----
+Error cases:
 
-### cURL Examples
-```bash
-# Health
-curl -s https://atm-system-v85j.onrender.com/health
+400 → invalid account format
 
-# Get balance
-curl -s https://atm-system-v85j.onrender.com/accounts/1001/balance
+404 → account not found
 
-# Deposit 50
-curl -s -X POST https://atm-system-v85j.onrender.com/accounts/1001/deposit \
-  -H "Content-Type: application/json" -d '{"amount": 50}'
+ ## Deposit
 
-# Withdraw 100
-curl -s -X POST https://atm-system-v85j.onrender.com/accounts/1001/withdraw \
-  -H "Content-Type: application/json" -d '{"amount": 100}'
+Method: POST /accounts/{account_number}/deposit
+Description: Adds funds to an account.
+Body:
 
+{ "amount": 50 }
+
+
+Success response (200):
+
+{
+  "message": "Deposit successful",
+  "account_number": "1001",
+  "amount": 50.0,
+  "balance": 300.0
+}
+
+Error cases:
+
+400 → invalid body (missing amount, negative or zero value, non-numeric).
+
+404 → account not found.
+
+## Withdraw
+
+Method: POST /accounts/{account_number}/withdraw
+Description: Withdraws funds from an account.
+Body:
+
+{ "amount": 100 }
+
+
+Success response (200):
+
+{
+  "message": "Withdrawal successful",
+  "account_number": "1001",
+  "amount": 100.0,
+  "balance": 200.0
+}
+
+Error cases:
+
+400 → invalid body, missing amount, non-positive value, or insufficient funds.
+
+404 → account not found.
 
 ## Testing with Postman
 
