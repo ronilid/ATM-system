@@ -1,0 +1,88 @@
+{
+  "info": {
+    "name": "ATM System",
+    "_postman_id": "9b3e8a76-8a80-4f2c-9a8e-aaa000111222",
+    "description": "Basic checks for ATM API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://127.0.0.1:8000/health"
+      }
+    },
+    {
+      "name": "Balance 1001",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://127.0.0.1:8000/accounts/1001/balance"
+      }
+    },
+    {
+      "name": "Deposit OK (1001, 50.00)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\"amount\": 50.00}" },
+        "url": "http://127.0.0.1:8000/accounts/1001/deposit"
+      }
+    },
+    {
+      "name": "Withdraw OK (1001, 10.00)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\"amount\": 10.00}" },
+        "url": "http://127.0.0.1:8000/accounts/1001/withdraw"
+      }
+    },
+    {
+      "name": "Withdraw too much (insufficient)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\"amount\": 999999.00}" },
+        "url": "http://127.0.0.1:8000/accounts/1001/withdraw"
+      }
+    },
+    {
+      "name": "Validation: amount missing",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{}" },
+        "url": "http://127.0.0.1:8000/accounts/1001/deposit"
+      }
+    },
+    {
+      "name": "Validation: amount not a number",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\"amount\": \"abc\"}" },
+        "url": "http://127.0.0.1:8000/accounts/1001/deposit"
+      }
+    },
+    {
+      "name": "Validation: amount <= 0",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\"amount\": 0}" },
+        "url": "http://127.0.0.1:8000/accounts/1001/deposit"
+      }
+    },
+    {
+      "name": "Account not found (balance)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://127.0.0.1:8000/accounts/9999/balance"
+      }
+    }
+  ]
+}
