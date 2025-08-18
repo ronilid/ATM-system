@@ -44,7 +44,13 @@ def parse_amount(payload: Any) -> Decimal:
     return q(dec) 
 
 # endpoints 
-# Simple endpoint to verify that the server is alive
+
+# GET - Root endpoint: return a friendly welcome instead of 404
+@app.get("/")
+def root():
+    return {"message": "ATM API is running."}
+
+# GET - Simple endpoint to verify that the server is alive
 @app.get("/health")
 def health():
     return {"message": "ok"}

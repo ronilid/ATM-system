@@ -176,6 +176,8 @@ How to use:
 - Money precision: At first I used floats, but quickly realized it might cause rounding errors. I switched to Decimal to keep things accurate.
 - Error handling: Tried FastAPI’s auto-validation only, but the errors felt too raw. I added manual checks so the API feels clearer and more user-friendly.
 - Thread safety: I wasn’t sure whether to lock balance checks too. Decided not to, since they don’t change the state and slight staleness is acceptable.
+- Root endpoint: At first, accessing `/` returned a 404 error.  
+  I added a simple default response (`{"message": "ATM API is running"}`) to make the API feel friendlier when visiting the base URL directly.
 - Hosting: Considered AWS/Heroku, but for a small project and no budget I’d choose Render as an easy free option.
 - I faced a few small challenges: connecting GitHub and working around the free plan limitations (manual deploys, cold starts).  
   Eventually I managed to configure it successfully, and the live link is stable and accessible.
