@@ -68,83 +68,52 @@ Note about Free plan: the service may go idle when unused.
 The first request after idle can take a few seconds (cold start). Subsequent requests are fast.
 
 
- ## API Endpoints:
- # Health check
+ ## API Endpoints
 
-Method: GET /health
-Description: Used to check if the server is running.
-Response:
+### Health Check
+| Method | Endpoint  | Description                 | Success | Errors |
+|-------:|-----------|-----------------------------|---------|--------|
+| GET    | `/health` | Verify the service is alive | `{ "message": "ok" }` | – |
 
-{ "message": "ok" }
+---
 
- # Get Balance
+### Get Balance
+| Method | Endpoint                             | Description                     | Success | Errors |
+|-------:|--------------------------------------|---------------------------------|---------|--------|
+| GET    | `/accounts/{account_number}/balance` | Return current account balance  | `{ "account_number": "1001", "balance": 250.0 }` | `400` invalid account format<br>`404` not found |
 
-Method: GET /accounts/{account_number}/balance
-Description: Returns the current balance of the given account.
-Path parameter:
+---
 
-account_number → account identifier (string or number).
+### Deposit
+| Method | Endpoint                             | Description           | Body | Success | Errors |
+|-------:|--------------------------------------|-----------------------|------|---------|--------|
+| POST   | `/accounts/{account_number}/deposit` | Deposit money to acct | `{ "amount": 50 }` | `{ "message": "Deposit successful", "balance": 300.0 }` | `400` invalid body / non-positive amount<br>`404` not found |
 
-Success response (200):
+---
 
-{
-  "account_number": "1001",
-  "balance": 250.0
-}
+### Withdraw
+| Method | Endpoint                              | Description                | Body | Success | Errors |
+|-------:|---------------------------------------|----------------------------|------|---------|--------|
+| POST   | `/accounts/{account_number}/withdraw` | Withdraw money from acct   | `{ "amount": 100 }` | `{ "message": "Withdrawal successful", "balance": 200.0 }` | `400` invalid body / insufficient funds<br>`404` not found |
 
-Error cases:
+---
 
-400 → invalid account format
+### cURL Examples
+```bash
+# Health
+curl -s https://atm-system-v85j.onrender.com/health
 
-404 → account not found
+# Get balance
+curl -s https://atm-system-v85j.onrender.com/accounts/1001/balance
 
- # Deposit
+# Deposit 50
+curl -s -X POST https://atm-system-v85j.onrender.com/accounts/1001/deposit \
+  -H "Content-Type: application/json" -d '{"amount": 50}'
 
-Method: POST /accounts/{account_number}/deposit
-Description: Adds funds to an account.
-Body:
+# Withdraw 100
+curl -s -X POST https://atm-system-v85j.onrender.com/accounts/1001/withdraw \
+  -H "Content-Type: application/json" -d '{"amount": 100}'
 
-{ "amount": 50 }
-
-
-Success response (200):
-
-{
-  "message": "Deposit successful",
-  "account_number": "1001",
-  "amount": 50.0,
-  "balance": 300.0
-}
-
-Error cases:
-
-400 → invalid body (missing amount, negative or zero value, non-numeric).
-
-404 → account not found.
-
-# Withdraw
-
-Method: POST /accounts/{account_number}/withdraw
-Description: Withdraws funds from an account.
-Body:
-
-{ "amount": 100 }
-
-
-Success response (200):
-
-{
-  "message": "Withdrawal successful",
-  "account_number": "1001",
-  "amount": 100.0,
-  "balance": 200.0
-}
-
-Error cases:
-
-400 → invalid body, missing amount, non-positive value, or insufficient funds.
-
-404 → account not found.
 
 ## Testing with Postman
 
@@ -173,13 +142,9 @@ How to use:
 ## Challenges & Decisions:
 
 - Choosing the stack: I debated whether to use Node.js or Python. Finally picked FastAPI because it’s quick to set up, has async support, and generates nice docs automatically.
-
 - Money precision: At first I used floats, but quickly realized it might cause rounding errors. I switched to Decimal to keep things accurate.
-
 - Error handling: Tried FastAPI’s auto-validation only, but the errors felt too raw. I added manual checks so the API feels clearer and more user-friendly.
-
 - Thread safety: I wasn’t sure whether to lock balance checks too. Decided not to, since they don’t change the state and slight staleness is acceptable.
-
 - Hosting: Considered AWS/Heroku, but for a small project and no budget I’d choose Render as an easy free option.
 - I faced a few small challenges: connecting GitHub and working around the free plan limitations (manual deploys, cold starts).  
   Eventually I managed to configure it successfully, and the live link is stable and accessible.
@@ -218,11 +183,12 @@ Insufficient funds:
 ## Future Improvements
 
 * Persistent storage (DB instead of in-memory).
-* User authentication (e.g., JWT).
+* User accounts & authentication (e.g.,login,JWT).
 * Account creation endpoint.
+* PUT/DELETE endpoints for updating account metadata
 * Improved transaction history tracking.
 
 ---
-Thanks for checking out this project! 😊
-Hope you enjoyed it
+Thanks for checking out this project! 😊  
+Hope you enjoyed it  
 Roni
