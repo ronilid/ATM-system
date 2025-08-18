@@ -20,7 +20,7 @@ The system supports depositing, withdrawing, and checking balances for in-memory
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/your-username/atm-system.git
+   git clone https://github.com/ronilid/ATM-system.git 
    cd atm-system
     ````
 
