@@ -255,8 +255,10 @@ Insufficient funds:
 * Persistent storage (DB instead of in-memory).
 * User accounts & authentication (e.g.,login,JWT).
 * Account creation endpoint.
-* PUT/DELETE endpoints for updating account metadata
-* Improved transaction history tracking.
+* PUT endpoints for updating account metadata.
+* Transaction history tracking.
+* Logging & monitoring for better debugging and auditing.
+* Basic client / frontend application to interact with the API.
 
 ---
 Thanks for checking out this project! 😊  
