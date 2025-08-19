@@ -16,6 +16,8 @@ ACCOUNTS: Dict[str, Decimal] = {
     "1001": Decimal("250.00"),
     "1002": Decimal("0.00"),
     "1003": Decimal("999.99"),
+    "2001": Decimal("1500.50"),
+    "2002": Decimal("75.25"),
 }
 LOCK = Lock() # ensures atomic updates for deposit/withdraw
 
@@ -25,7 +27,6 @@ def validate_account_number(account_number: str):
         raise HTTPException(status_code=400, detail="Invalid account number format")
 
 def parse_amount(payload: Any) -> Decimal:
-    """Manual, friendly validation for the request body."""
     if payload is None or not isinstance(payload, dict):
         raise HTTPException(status_code=400, detail="Missing JSON body")
     if "amount" not in payload:
@@ -45,7 +46,7 @@ def parse_amount(payload: Any) -> Decimal:
 
 # endpoints 
 
-# GET - Root endpoint: return a friendly welcome instead of 404
+# GET - return a friendly welcome instead of 404
 @app.get("/")
 def root():
     return {"message": "ATM API is running."}
@@ -101,6 +102,36 @@ def withdraw(account_number: str, payload: dict):
         "account_number": account_number,
         "amount": float(amount),
         "balance": float(new_bal),
+    }
+    
+# DELETE - Remove an account
+@app.delete("/accounts/{account_number}")
+def delete_account(account_number: str):
+    validate_account_number(account_number)
+    if account_number not in ACCOUNTS:
+        raise HTTPException(status_code=404, detail="Account not found")
+    with LOCK:
+        removed = q(ACCOUNTS.pop(account_number))
+    return {
+        "message": "Account deleted",
+        "account_number": account_number,
+        "final_balance": float(removed)
+    }
+    
+# POST - Reset balance to 0.00 for a given account
+@app.post("/accounts/{account_number}/reset")
+def reset_balance(account_number: str):
+    validate_account_number(account_number)
+    if account_number not in ACCOUNTS:
+        raise HTTPException(status_code=404, detail="Account not found")
+    with LOCK:
+        prev = q(ACCOUNTS[account_number])
+        ACCOUNTS[account_number] = q(Decimal("0"))
+    return {
+        "message": "Balance reset successful",
+        "account_number": account_number,
+        "previous_balance": float(prev),
+        "balance": 0.0,
     }
 
 if __name__ == "__main__":

@@ -83,6 +83,48 @@
         "header": [],
         "url": "http://127.0.0.1:8000/accounts/9999/balance"
       }
+    },
+    {
+      "name": "Reset account 1001",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": "http://127.0.0.1:8000/accounts/1001/reset"
+      }
+    },
+    {
+      "name": "Deposit after reset (1001, 20.00)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\"amount\": 20.00}" },
+        "url": "http://127.0.0.1:8000/accounts/1001/deposit"
+      }
+    },
+    {
+      "name": "Withdraw exact balance (1001, 20.00)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\"amount\": 20.00}" },
+        "url": "http://127.0.0.1:8000/accounts/1001/withdraw"
+      }
+    },
+    {
+      "name": "Delete account 2002",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": "http://127.0.0.1:8000/accounts/2002"
+      }
+    },
+    {
+      "name": "Balance after delete (2002) → 404",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://127.0.0.1:8000/accounts/2002/balance"
+      }
     }
   ]
 }

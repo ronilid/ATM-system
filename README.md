@@ -5,11 +5,12 @@ The system supports depositing, withdrawing, and checking balances for in-memory
 
 ---
 ## Features
-- Create new accounts
 - Deposit & withdraw money
 - Check account balance
 - Error handling for invalid inputs
 - Health check endpoint
+- Reset account balance 
+- Delete account
 
 ## Tech Stack
 - **Backend**: Python, FastAPI, Uvicorn
@@ -71,17 +72,17 @@ The first request after idle can take a few seconds (cold start). Subsequent req
  # API Endpoints:
  ## Health check
 
-Method: GET /health
-Description: Used to check if the server is running.
-Response:
+**Method:** GET /health
+**Description:** Used to check if the server is running.
+**Response:**
 
 { "message": "ok" }
 
  ## Get Balance
 
-Method: GET /accounts/{account_number}/balance
-Description: Returns the current balance of the given account.
-Path parameter:
+**Method:** GET /accounts/{account_number}/balance
+**Description:** Returns the current balance of the given account.
+**Path parameter:**
 
 account_number → account identifier (string or number).
 
@@ -100,9 +101,9 @@ Error cases:
 
  ## Deposit
 
-Method: POST /accounts/{account_number}/deposit
-Description: Adds funds to an account.
-Body:
+**Method:** POST /accounts/{account_number}/deposit
+**Description:** Adds funds to an account.
+**Body:**
 
 { "amount": 50 }
 
@@ -124,9 +125,9 @@ Error cases:
 
 ## Withdraw
 
-Method: POST /accounts/{account_number}/withdraw
-Description: Withdraws funds from an account.
-Body:
+**Method:** POST /accounts/{account_number}/withdraw
+**Description:** Withdraws funds from an account.
+**Body:**
 
 { "amount": 100 }
 
@@ -145,6 +146,38 @@ Error cases:
 400 → invalid body, missing amount, non-positive value, or insufficient funds.
 
 404 → account not found.
+
+## Reset balance
+
+**Method:** POST /accounts/{account_number}/reset
+**Description:** Resets the account’s balance to 0.00 (useful for manual testing).
+
+Success (200) example:
+
+{
+  "message": "Balance reset successful",
+  "account_number": "1001",
+  "previous_balance": 290.0,
+  "balance": 0.0
+}
+
+
+Errors: 400 invalid account format, 404 account not found.
+
+## Delete account
+
+**Method:** DELETE /accounts/{account_number}
+**Description:** Deletes the account and returns the final balance.
+
+Success (200) example:
+
+{
+  "message": "Account deleted",
+  "account_number": "2002",
+  "final_balance": 75.25
+}
+
+Errors: 400 invalid account format, 404 account not found.
 
 ## Testing with Postman
 
@@ -178,6 +211,7 @@ How to use:
 - Thread safety: I wasn’t sure whether to lock balance checks too. Decided not to, since they don’t change the state and slight staleness is acceptable.
 - Root endpoint: At first, accessing `/` returned a 404 error.  
   I added a simple default response (`{"message": "ATM API is running"}`) to make the API feel friendlier when visiting the base URL directly.
+- Added two more endpoints (/reset, DELETE /accounts/{id}) to make manual testing easier while keeping the code simple and in-memory.
 - Hosting: Considered AWS/Heroku, but for a small project and no budget I’d choose Render as an easy free option.
 - I faced a few small challenges: connecting GitHub and working around the free plan limitations (manual deploys, cold starts).  
   Eventually I managed to configure it successfully, and the live link is stable and accessible.
