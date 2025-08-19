@@ -72,16 +72,16 @@ The first request after idle can take a few seconds (cold start). Subsequent req
  # API Endpoints:
  ## Health check
 
-**Method:** GET /health
-**Description:** Used to check if the server is running.
+**Method:** GET /health  
+**Description:** Used to check if the server is running.  
 **Response:**
 
 { "message": "ok" }
 
  ## Get Balance
 
-**Method:** GET /accounts/{account_number}/balance
-**Description:** Returns the current balance of the given account.
+**Method:** GET /accounts/{account_number}/balance  
+**Description:** Returns the current balance of the given account.  
 **Path parameter:**
 
 account_number → account identifier (string or number).
@@ -101,8 +101,8 @@ Error cases:
 
  ## Deposit
 
-**Method:** POST /accounts/{account_number}/deposit
-**Description:** Adds funds to an account.
+**Method:** POST /accounts/{account_number}/deposit  
+**Description:** Adds funds to an account.  
 **Body:**
 
 { "amount": 50 }
@@ -125,8 +125,8 @@ Error cases:
 
 ## Withdraw
 
-**Method:** POST /accounts/{account_number}/withdraw
-**Description:** Withdraws funds from an account.
+**Method:** POST /accounts/{account_number}/withdraw  
+**Description:** Withdraws funds from an account.  
 **Body:**
 
 { "amount": 100 }
@@ -149,7 +149,7 @@ Error cases:
 
 ## Reset balance
 
-**Method:** POST /accounts/{account_number}/reset
+**Method:** POST /accounts/{account_number}/reset  
 **Description:** Resets the account’s balance to 0.00 (useful for manual testing).
 
 Success (200) example:
@@ -166,7 +166,7 @@ Errors: 400 invalid account format, 404 account not found.
 
 ## Delete account
 
-**Method:** DELETE /accounts/{account_number}
+**Method:** DELETE /accounts/{account_number}  
 **Description:** Deletes the account and returns the final balance.
 
 Success (200) example:
@@ -181,13 +181,16 @@ Errors: 400 invalid account format, 404 account not found.
 
 ## Testing with Postman
 
-A Postman collection (`atm_system.postman_collection.json`) is included.
+A Postman collection (`ATM.postman_collection.json`) is included.
 
 How to use:
 
 1. Open **Postman** → Import → Select the JSON file.
 2. Ensure the base URL is set to `http://127.0.0.1:8000`.
-3. Run the predefined requests (balance, deposit, withdraw, and error cases).
+3. Run the predefined requests (balance, deposit, withdraw, and error cases).  
+
+Note: when testing on Render, make sure the base_url is 
+`https://atm-system-v85j.onrender.com` instead of localhost.
 
 ---
 
